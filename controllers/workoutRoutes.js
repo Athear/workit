@@ -40,3 +40,6 @@ router.post('/',(req,res)=>{
 router.get('/range',(req,res)=>{
     
 });
+
+
+module.exports = router;
