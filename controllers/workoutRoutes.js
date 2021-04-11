@@ -9,10 +9,13 @@ router.get('/',(req,res)=>{
 //route for addExercise
 router.put('/',(req,res)=>{
     db.Exercise.create(req.body)
-        .then({_id}) => db.Exercise.findOneAndUpdate({},//TODO: filter properly!
+        .then(({_id}) => db.Exercise.findOneAndUpdate({},//TODO: filter properly!
                 {$push:{ exercises: _id }},
                 {new:true}
-            )
+            ))
+        .catch((err)=>{
+            console.log(err.message);
+        });
 });
 
 //route for createWorkout
