@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { Workout } = require('../models');
 const db = require("../models");
 
 //route for getLastWorkout
@@ -13,14 +14,21 @@ router.put('/',(req,res)=>{
                 {$push:{ exercises: _id }},
                 {new:true}
             ))
+        .then(()=>{res.json("exercise added")})
         .catch((err)=>{
             console.log(err.message);
+            res.json(err)
         });
 });
 
 //route for createWorkout
 router.post('/',(req,res)=>{
-    
+    db.Workout.create({})
+    .then((workout)=>{res.json(workout)})
+    .catch((err)=>{
+        console.log(err.message);
+        res.json(err)
+    })
 });
 
 //route for getWorkoutsInRange
