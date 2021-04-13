@@ -4,7 +4,7 @@ const db = require("../models");
 
 //route for getLastWorkout
 router.get('/',(req,res)=>{
-    db.Workout.findOne({}).sort({"day":-1})
+    db.Workout.find({}).sort({"day":-1}).limit(1)
     .then((workout)=>{res.json(workout)})
     .catch((err)=>{
         console.log(err.message);
