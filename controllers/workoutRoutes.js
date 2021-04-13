@@ -13,17 +13,22 @@ router.get('/',(req,res)=>{
 });
 
 //route for addExercise
-router.put('/',(req,res)=>{
-    db.Exercise.create(req.body)
-        .then(({_id}) => db.Exercise.findOneAndUpdate({},//TODO: filter properly!
-                {$push:{ exercises: _id }},
-                {new:true}
-            ))
-        .then(()=>{res.json("exercise added")})
-        .catch((err)=>{
-            console.log(err.message);
-            res.json(err)
-        });
+router.put('/:id',(req,res)=>{
+    db.Workout.findByIdAndUpdate(
+        req.params.id,
+        {
+            $push:
+            {
+                exercises: req.body
+            }
+        },
+        {new: true}
+        )
+    .then(workout=>{res.status(200).json(workout)})
+    .catch((err)=>{
+        console.log(err.message);
+        res.status(400).json(err)
+    });
 });
 
 //route for createWorkout
