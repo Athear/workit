@@ -3,25 +3,22 @@ const { Workout } = require('../models');
 const db = require("../models");
 
 //route for getLastWorkout
-router.get('/',(req,res)=>{
-    db.Workout.findOne({}).sort({"day":-1})
-    .then((workout)=>{
-        Workout.aggregate([
-            {$unwind:"$exercises"},
-            {$group:{_id:"$_id", totalDuration:{$sum:"$exercises.duration"}}}
-        ]).then(ret=>{
-            console.log(ret);
-            res.json([workout])
-        })
-    })    
-    .catch((err)=>{
-        console.log(err.message);
-        res.status(400).json(err)
-    });
+router.get('/', (req, res) => {
+    Workout.aggregate([
+        {
+            $addFields: {
+                totalDuration: { $sum: "$exercises.duration" }
+            }
+        }
+    ])
+    .sort({ "day": -1 }).limit(1)
+    .then(latestWorkout => {
+        res.json(latestWorkout)
+    })
 });
 
 //route for addExercise
-router.put('/:id',(req,res)=>{
+router.put('/:id', (req, res) => {
     db.Workout.findByIdAndUpdate(
         req.params.id,
         {
@@ -30,28 +27,28 @@ router.put('/:id',(req,res)=>{
                 exercises: req.body
             }
         },
-        {new: true}
-        )
-    .then(workout=>{res.status(200).json(workout)})
-    .catch((err)=>{
-        console.log(err.message);
-        res.status(400).json(err)
-    });
+        { new: true }
+    )
+        .then(workout => { res.status(200).json(workout) })
+        .catch((err) => {
+            console.log(err.message);
+            res.status(400).json(err)
+        });
 });
 
 //route for createWorkout
-router.post('/',(req,res)=>{
+router.post('/', (req, res) => {
     db.Workout.create({})
-    .then((workout)=>{res.json(workout)})
-    .catch((err)=>{
-        console.log(err.message);
-        res.json(err)
-    })
+        .then((workout) => { res.json(workout) })
+        .catch((err) => {
+            console.log(err.message);
+            res.json(err)
+        })
 });
 
 //route for getWorkoutsInRange
-router.get('/range',(req,res)=>{
-    
+router.get('/range', (req, res) => {
+
 });
 
 
